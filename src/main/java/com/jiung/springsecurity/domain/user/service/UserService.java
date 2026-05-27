@@ -20,7 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
+    @Transactional
     public SignupResponse signup(SignupRequest request) {
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 가입된 이메일 입니다");
@@ -28,7 +28,7 @@ public class UserService {
         }
         String encodePassword = bCryptPasswordEncoder.encode(request.getPassword());
 
-        User user = new User();
+        User user = new User(request.getEmail(), encodePassword);
         userRepository.save(user);
 
         return new SignupResponse(user);
