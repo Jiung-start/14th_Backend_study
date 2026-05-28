@@ -13,9 +13,13 @@ public class LoginResponse {
 
     private String email;
 
+
+
     public LoginResponse(User user) {
 
         this.id = user.getId();
         this.email = user.getEmail();
+
+
     }
 }

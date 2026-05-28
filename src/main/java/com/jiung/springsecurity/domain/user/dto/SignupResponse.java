@@ -11,9 +11,12 @@ public class SignupResponse {
     private Long id;
     private String email;
 
+
     public SignupResponse(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
+
+
     }
 
 

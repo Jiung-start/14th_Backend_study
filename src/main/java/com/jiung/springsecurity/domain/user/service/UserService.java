@@ -46,6 +46,7 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
 
         }
+
         return new LoginResponse(user);
     }
 
