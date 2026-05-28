@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,12 +23,6 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    @CreatedDate                              // ← 추가
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate                         // ← 추가
-    private LocalDateTime updatedAt;
 
     public User(String email, String password) {
         this.email = email;

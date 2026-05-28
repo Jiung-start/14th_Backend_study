@@ -6,12 +6,14 @@ import com.jiung.springsecurity.domain.user.dto.SignupRequest;
 import com.jiung.springsecurity.domain.user.dto.SignupResponse;
 import com.jiung.springsecurity.domain.user.entity.User;
 import com.jiung.springsecurity.domain.user.repository.UserRepository;
+import com.jiung.springsecurity.global.exception.BusinessException;
+import com.jiung.springsecurity.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class UserService {
     @Transactional
     public SignupResponse signup(SignupRequest request) {
         if(userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 가입된 이메일 입니다");
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
 
         }
         String encodePassword = bCryptPasswordEncoder.encode(request.getPassword());
@@ -34,13 +36,14 @@ public class UserService {
         return new SignupResponse(user);
     }
 
+
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"가입되지 않은 이메일 입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if(!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
 
         }
         return new LoginResponse(user);
