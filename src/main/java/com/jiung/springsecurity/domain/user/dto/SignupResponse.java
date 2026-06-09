@@ -10,12 +10,13 @@ public class SignupResponse {
 
     private Long id;
     private String email;
+    private String token;
 
 
-    public SignupResponse(User user) {
+    public SignupResponse(User user, String token) {
         this.id = user.getId();
         this.email = user.getEmail();
-
+        this.token = token;
 
     }
 

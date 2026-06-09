@@ -8,6 +8,7 @@ import com.jiung.springsecurity.domain.user.entity.User;
 import com.jiung.springsecurity.domain.user.repository.UserRepository;
 import com.jiung.springsecurity.global.exception.BusinessException;
 import com.jiung.springsecurity.global.exception.ErrorCode;
+import com.jiung.springsecurity.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
@@ -33,7 +35,12 @@ public class UserService {
         User user = new User(request.getEmail(), encodePassword);
         userRepository.save(user);
 
-        return new SignupResponse(user);
+        String token = jwtTokenProvider.createToken(
+                user.getId(),
+                user.getEmail()
+        );
+
+        return new SignupResponse(user,token);
     }
 
 
@@ -46,8 +53,13 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
 
         }
+        String token = jwtTokenProvider.createToken(
+                user.getId(),
+                user.getEmail()
+        );
 
-        return new LoginResponse(user);
+
+        return new LoginResponse(user, token);
     }
 
 

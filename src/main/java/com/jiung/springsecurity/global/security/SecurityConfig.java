@@ -1,5 +1,8 @@
 package com.jiung.springsecurity.global.security;
 
+import com.jiung.springsecurity.global.jwt.JwtAuthFilter;
+import com.jiung.springsecurity.global.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,10 +11,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -31,6 +38,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/signup", "/api/users/login","/api/posts/**"
                         ).permitAll()
                         .anyRequest().authenticated())
+                .addFilterBefore(
+                        new JwtAuthFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .build();
     }
 }

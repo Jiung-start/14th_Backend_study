@@ -13,6 +13,8 @@ public class GlobalExceptionHandler {
 
         ErrorResponse response = new ErrorResponse(errorCode.name(), errorCode.getMessage());
 
+
+
         return ResponseEntity.badRequest().body(response);
     }
 
