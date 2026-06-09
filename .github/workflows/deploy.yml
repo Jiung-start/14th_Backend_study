@@ -52,8 +52,8 @@ jobs:
             docker run -d \
               --name spring-app \
               -p 8080:8080 \
-              --add-host=host.docker.internal:host-gateway
-              —env-file /home/ubuntu/app/.env \
+              --add-host=host.docker.internal:host-gateway \
+              --env-file /home/ubuntu/app/.env \
               ${{ secrets.DOCKER_USERNAME }}/spring-app:latest
 
             docker image prune -f
